@@ -18,3 +18,11 @@ The GUI features the following features:
 After confirmation, selected privacy mechanisms will start working on client side of the application. 
 
 ## How to Install
+1. Open your Unity project.
+2. Navigate to Window > Package Manager.
+3. Click the '+' icon in the top-left corner of the Package Manager window.
+4. Select "Add package from git URL..." from the dropdown menu.
+5. Enter the URL of this github repo
+
+Unity will automatically download and import the package into your project. The assets will be located in the Packages/XR-Privacy SDK folder, keeping your Assets directory clean.
+
