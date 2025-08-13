@@ -1,0 +1,5 @@
+/Users/azimibragimov/code/XR-Privacy-SDK/.utmp/RelWithDebInfo/4c4z5s73/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/azimibragimov/code/XR-Privacy-SDK/.utmp/RelWithDebInfo/4c4z5s73/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/azimibragimov/code/XR-Privacy-SDK/.utmp/RelWithDebInfo/4c4z5s73/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
+/Users/azimibragimov/code/XR-Privacy-SDK/.utmp/RelWithDebInfo/4c4z5s73/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
+/Users/azimibragimov/code/XR-Privacy-SDK/.utmp/RelWithDebInfo/4c4z5s73/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir

@@ -1,4 +1,4 @@
-Library: C:\Users\Dolphin\Desktop\XR-Privacy\Temp\BurstOutput\tempburstlibs\armeabi-v7a\lib_burst_generated
+Library: /Users/azimibragimov/code/XR-Privacy-SDK/Temp/BurstOutput/tempburstlibs/armeabi-v7a/lib_burst_generated
 --platform=Android
 --minimum-os-version=
 --backend=burst-llvm-19
@@ -8,11 +8,11 @@ Library: C:\Users\Dolphin\Desktop\XR-Privacy\Temp\BurstOutput\tempburstlibs\arme
 --dump=Function
 --float-precision=Standard
 --target-framework=NetFramework
---generate-link-xml=Temp\burst.link.xml
---temp-folder=C:\Users\Dolphin\Desktop\XR-Privacy\Temp\Burst
---key-folder=C:/Program Files/Unity/Hub/Editor/6000.1.13f1/Editor/Data/PlaybackEngines/AndroidPlayer
---decode-folder=C:\Users\Dolphin\Desktop\XR-Privacy\Library\Burst
---output=C:\Users\Dolphin\Desktop\XR-Privacy\Temp\BurstOutput\tempburstlibs\armeabi-v7a\lib_burst_generated
+--generate-link-xml=Temp/burst.link.xml
+--temp-folder=/Users/azimibragimov/code/XR-Privacy-SDK/Temp/Burst
+--key-folder=/Applications/Unity/Hub/Editor/6000.1.13f1/PlaybackEngines/AndroidPlayer
+--decode-folder=/Users/azimibragimov/code/XR-Privacy-SDK/Library/Burst
+--output=/Users/azimibragimov/code/XR-Privacy-SDK/Temp/BurstOutput/tempburstlibs/armeabi-v7a/lib_burst_generated
 --pdb-search-paths=Temp/ManagedSymbols/
 
 --method=Unity.Jobs.IJobExtensions+JobStruct`1[[UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.Jobs.Float4TweenJob, Unity.XR.Interaction.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null::Execute(UnityEngine.XR.Interaction.Toolkit.AffordanceSystem.Jobs.Float4TweenJob&, Unity.XR.Interaction.Toolkit, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|System.IntPtr, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089|Unity.Jobs.LowLevel.Unsafe.JobRanges&, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null|System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089)--34aec427743d7d01c0cb7a219c9fbe32
