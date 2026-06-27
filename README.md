@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# 🕶️ XR-Privacy SDK
+# XR-Privacy SDK
 
 ### Real-time privacy for VR/XR — hide who you are in your motion, keep the experience.
 
