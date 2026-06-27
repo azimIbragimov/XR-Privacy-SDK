@@ -1,0 +1,21 @@
+{
+    "name": "XRPrivacy.Editor",
+    "rootNamespace": "XRPrivacy.EditorTools",
+    "references": [
+        "XRPrivacy.Runtime",
+        "Unity.XR.CoreUtils",
+        "Unity.InferenceEngine",
+        "UnityEngine.UI"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

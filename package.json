@@ -1,0 +1,39 @@
+{
+  "name": "com.xrprivacy.sdk",
+  "version": "0.1.0",
+  "displayName": "XR-Privacy SDK",
+  "description": "XR headsets stream your head, hand, and eye movement — and that motion is as unique as a fingerprint. This SDK perturbs it in real time so users are much harder to re-identify, without breaking the experience. It's the official implementation of the multimodal (gaze + body) privatization methods from our paper.",
+  "unity": "6000.1",
+  "documentationUrl": "https://github.com/azimIbragimov/XR-Privacy-SDK",
+  "changelogUrl": "https://github.com/azimIbragimov/XR-Privacy-SDK/blob/main/Packages/com.xrprivacy.sdk/CHANGELOG.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azimIbragimov/XR-Privacy-SDK.git"
+  },
+  "dependencies": {
+    "com.unity.ai.inference": "2.2.1",
+    "com.unity.xr.interaction.toolkit": "3.2.2",
+    "com.unity.xr.management": "4.5.1",
+    "com.unity.ugui": "2.0.0"
+  },
+  "keywords": [
+    "xr",
+    "vr",
+    "privacy",
+    "anonymization",
+    "dmm",
+    "metaguard",
+    "gaze",
+    "telemetry"
+  ],
+  "samples": [
+    {
+      "displayName": "Demo / Quick Start",
+      "description": "Step-by-step setup guide for wiring the SDK into an XR scene.",
+      "path": "Samples~/Demo"
+    }
+  ],
+  "author": {
+    "name": "XR-Privacy SDK"
+  }
+}
