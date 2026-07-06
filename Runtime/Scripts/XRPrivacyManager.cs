@@ -62,6 +62,9 @@ namespace XRPrivacy
         public Transform gazeTransform;
         [Tooltip("Hard cap on how far the privatized gaze may deviate from the true gaze, in degrees.")]
         public float maxEyeAngle = 2f;
+        [Tooltip("Show a floating readout (in the headset) of the raw eye-tracking state: permission, " +
+                 "device found, isTracked, and how far gaze differs from head. For diagnosing eye tracking.")]
+        public bool showGazeDebug = false;
 
         // The eye mechanism active for the current application type.
         private IEyePrivacyMechanism currentEyeMechanism;
@@ -113,7 +116,21 @@ namespace XRPrivacy
 
         void Start()
         {
+            RequestEyeTrackingPermission();
             StartCoroutine(InitializeWhenXRReady());
+        }
+
+        // Quest Pro (and other Meta devices) gate eye data behind a runtime permission.
+        // Without it, the eye-tracking device reports isTracked = false and gaze falls
+        // back to head-forward. The matching manifest entry
+        // (com.oculus.permission.EYE_TRACKING) is auto-added on the Meta Quest build path.
+        void RequestEyeTrackingPermission()
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            const string perm = "com.oculus.permission.EYE_TRACKING";
+            if (!UnityEngine.Android.Permission.HasUserAuthorizedPermission(perm))
+                UnityEngine.Android.Permission.RequestUserPermission(perm);
+#endif
         }
 
         IEnumerator InitializeWhenXRReady()
@@ -279,6 +296,8 @@ namespace XRPrivacy
             // Eye channel: the gaze cursor always tracks the true gaze so it is visible
             // before enabling; the angular perturbation is only applied once enabled.
             ApplyEyePrivacy();
+
+            if (showGazeDebug) UpdateGazeDebug();
 
             UpdateTelemetry();
         }
@@ -598,6 +617,13 @@ namespace XRPrivacy
             return Quaternion.identity;
         }
 
+        // The OpenXR eye-gaze feature (XR_EXT_eye_gaze_interaction, e.g. Quest Pro) exposes
+        // a combined "gazeRotation" quaternion on the eye-tracking device - NOT the legacy
+        // Eyes/eyesData struct. Referenced by name so this package needs no compile-time
+        // dependency on the OpenXR assembly.
+        static readonly InputFeatureUsage<Quaternion> s_GazeRotation =
+            new InputFeatureUsage<Quaternion>("gazeRotation");
+
         bool TryGetEyeGaze(out Quaternion gaze)
         {
             gaze = Quaternion.identity;
@@ -607,19 +633,115 @@ namespace XRPrivacy
             InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.EyeTracking, eyeDevices);
             foreach (var d in eyeDevices)
             {
-                if (d.TryGetFeatureValue(CommonUsages.eyesData, out Eyes eyes))
+                // Only trust the gaze while the device reports it is actually tracked
+                // (eye tracking off / permission denied -> isTracked false).
+                bool tracked = !d.TryGetFeatureValue(CommonUsages.isTracked, out bool t) || t;
+
+                // Preferred: OpenXR combined gaze rotation (Quest Pro path).
+                if (tracked && d.TryGetFeatureValue(s_GazeRotation, out Quaternion g) && IsValidRotation(g))
                 {
-                    if (eyes.TryGetLeftEyeRotation(out gaze) && IsValidRotation(gaze)) return true;
-                    if (eyes.TryGetRightEyeRotation(out gaze) && IsValidRotation(gaze)) return true;
+                    gaze = ToWorldGaze(g);
+                    return true;
+                }
+
+                // Legacy XR-SDK per-eye gaze (runtimes that populate eyesData).
+                if (tracked && d.TryGetFeatureValue(CommonUsages.eyesData, out Eyes eyes))
+                {
+                    if (eyes.TryGetLeftEyeRotation(out g) && IsValidRotation(g)) { gaze = ToWorldGaze(g); return true; }
+                    if (eyes.TryGetRightEyeRotation(out g) && IsValidRotation(g)) { gaze = ToWorldGaze(g); return true; }
                 }
             }
 
             // Coarse fallback: center-eye (HMD) rotation if a runtime exposes it as gaze.
             InputDevice center = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
-            if (center.isValid && center.TryGetFeatureValue(CommonUsages.centerEyeRotation, out gaze) && IsValidRotation(gaze))
+            if (center.isValid && center.TryGetFeatureValue(CommonUsages.centerEyeRotation, out Quaternion c) && IsValidRotation(c))
+            {
+                gaze = ToWorldGaze(c);
                 return true;
+            }
 
             return false;
+        }
+
+        // XR Input device rotations are in tracking space; the cursor works in world space.
+        // The center-eye (HMD) rotation is in the SAME tracking space, and the render
+        // camera is its world-space counterpart - so (camWorld * inverse(headTracking))
+        // is the exact tracking->world map. Deriving it from the head this way is robust
+        // to however the XR Origin / Camera Offset is positioned or rotated.
+        Quaternion ToWorldGaze(Quaternion trackingSpace)
+        {
+            Camera cam = EyeCamera();
+            InputDevice center = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
+            if (cam != null && center.isValid &&
+                center.TryGetFeatureValue(CommonUsages.centerEyeRotation, out Quaternion headTracking) &&
+                IsValidRotation(headTracking))
+            {
+                return cam.transform.rotation * Quaternion.Inverse(headTracking) * trackingSpace;
+            }
+
+            // Fallback if the HMD rotation is unavailable.
+            return trackingOrigin != null ? trackingOrigin.rotation * trackingSpace : trackingSpace;
+        }
+
+        private TextMesh _gazeDebugText;
+
+        // Floating in-headset readout of the raw eye-tracking state, to see exactly why the
+        // gaze cursor is / isn't following the eyes. Toggle with showGazeDebug.
+        void UpdateGazeDebug()
+        {
+            Camera cam = EyeCamera();
+            if (cam == null) return;
+
+            if (_gazeDebugText == null)
+            {
+                var go = new GameObject("GazeDebug");
+                _gazeDebugText = go.AddComponent<TextMesh>();
+                _gazeDebugText.characterSize = 0.02f;
+                _gazeDebugText.fontSize = 90;
+                _gazeDebugText.anchor = TextAnchor.MiddleCenter;
+                _gazeDebugText.color = Color.yellow;
+            }
+            // Park it 1.5 m in front of the eye, facing the user.
+            Transform tf = _gazeDebugText.transform;
+            tf.position = cam.transform.position + cam.transform.forward * 1.5f - cam.transform.up * 0.4f;
+            tf.rotation = Quaternion.LookRotation(tf.position - cam.transform.position, cam.transform.up);
+
+            // Permission state (device only).
+            string perm = "n/a (editor)";
+#if UNITY_ANDROID && !UNITY_EDITOR
+            perm = UnityEngine.Android.Permission.HasUserAuthorizedPermission("com.oculus.permission.EYE_TRACKING")
+                 ? "GRANTED" : "DENIED";
+#endif
+
+            // Raw eye device state.
+            var eyeDevices = new List<InputDevice>();
+            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.EyeTracking, eyeDevices);
+            string devInfo;
+            if (eyeDevices.Count == 0)
+            {
+                devInfo = "eye device: NONE FOUND";
+            }
+            else
+            {
+                var d = eyeDevices[0];
+                bool hasTracked = d.TryGetFeatureValue(CommonUsages.isTracked, out bool tracked);
+                bool hasGaze = d.TryGetFeatureValue(s_GazeRotation, out Quaternion g);
+
+                // Angle between eye gaze and head, in tracking space. ~0 always => eyes not
+                // producing independent data (head-locked privacy fallback).
+                float eyeVsHead = -1f;
+                InputDevice center = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
+                if (hasGaze && center.isValid &&
+                    center.TryGetFeatureValue(CommonUsages.centerEyeRotation, out Quaternion head))
+                    eyeVsHead = Vector3.Angle(g * Vector3.forward, head * Vector3.forward);
+
+                devInfo = $"eye device: '{d.name}'\n" +
+                          $"isTracked: {(hasTracked ? tracked.ToString() : "no feature")}\n" +
+                          $"gazeRotation: {(hasGaze ? "yes" : "MISSING")}\n" +
+                          $"eye-vs-head: {(eyeVsHead < 0 ? "n/a" : eyeVsHead.ToString("F1") + " deg")}";
+            }
+
+            _gazeDebugText.text = $"EYE TRACKING DEBUG\nperm: {perm}\n{devInfo}";
         }
 
         void ApplyNoiseToTransforms()
