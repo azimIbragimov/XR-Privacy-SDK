@@ -36,7 +36,7 @@ without breaking the experience. It's the official implementation of the multimo
 
 <div align="center">
 
-[![Watch on YouTube](https://img.shields.io/badge/Watch%20on-YouTube-red?logo=youtube)](https://www.youtube.com/watch?v=-eT6piXPrb0)
+[![YouTube](http://i.ytimg.com/vi/-eT6piXPrb0/hqdefault.jpg)](https://www.youtube.com/watch?v=-eT6piXPrb0)
 
 </div>
 
