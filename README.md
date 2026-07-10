@@ -36,7 +36,7 @@ without breaking the experience. It's the official implementation of the multimo
 
 <div align="center">
 
-[![Walkthrough video](https://img.youtube.com/vi/-eT6piXPrb0/maxresdefault.jpg)](https://www.youtube.com/watch?v=-eT6piXPrb0)
+[![Youtube Video]()](https://www.youtube.com/watch?v=-eT6piXPrb0)
 
 </div>
 
