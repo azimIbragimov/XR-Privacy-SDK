@@ -31,6 +31,15 @@ without breaking the experience. It's the official implementation of the multimo
 | **One-click setup** | A menu wizard builds and wires the whole scene for you |
 | **Recording** | Save the original and privatized motion to a CSV file |
 
+
+## 🎥 Walkthrough
+
+<div align="center">
+
+[![Walkthrough video](https://img.youtube.com/vi/-eT6piXPrb0/maxresdefault.jpg)](https://www.youtube.com/watch?v=-eT6piXPrb0)
+
+</div>
+
 ## 📦 Install
 
 In Unity (6000.1 or newer): **Window → Package Manager → Add package from git URL…**
