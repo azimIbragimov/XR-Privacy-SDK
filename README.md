@@ -36,7 +36,7 @@ without breaking the experience. It's the official implementation of the multimo
 
 <div align="center">
 
-[![YouTube](http://i.ytimg.com/vi/-eT6piXPrb0/hqdefault.jpg)](https://www.youtube.com/watch?v=-eT6piXPrb0)
+[![XR Privacy SDK Tutorial](https://drive.google.com/uc?export=view&id=1JvX9GOPImvpbLjg29R5vblFL-i0uIZBx)](https://www.youtube.com/watch?v=-eT6piXPrb0)
 
 </div>
 
